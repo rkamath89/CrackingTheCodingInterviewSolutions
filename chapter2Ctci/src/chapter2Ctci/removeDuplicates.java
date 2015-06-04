@@ -135,6 +135,71 @@ public class removeDuplicates {
 		System.out.println("Sum Of Node is ");
 		printList(resultHead);
 	}
+	public static void removeCircularity(LinkList collisionPoint,LinkList head)
+	{
+		LinkList ptr1 =head;
+		//Check if ptr2.next == ptr1 , increment it linearly
+		LinkList ptr2 = null;
+		while(true)
+		{
+			ptr2 = collisionPoint;
+			while(ptr2.nextNode != null && ptr2.nextNode != ptr1 && ptr2.nextNode != collisionPoint)
+			{
+				ptr2 = ptr2.nextNode;
+			}
+			if(ptr2.nextNode == ptr1)
+			{
+				System.out.println(" Start of Loop at value :: " +ptr1.value);
+				break;
+			}
+			else
+			{
+				ptr1 = ptr1.nextNode;
+			}
+		}
+		ptr2.nextNode = null;
+		System.out.println(" LL after removing Circularity");
+		printList(head);
+	}
+	public static void findCircularNode(LinkList node)
+	{
+		LinkList temp1 = node;
+		LinkList temp2 = node;
+		while(temp1 != null && temp2 != null && temp2.nextNode!= null)
+		{
+			temp1 = temp1.nextNode;
+			temp2 = temp2.nextNode.nextNode;
+			if(temp1 == temp2)
+			{
+				System.out.println(" LL is circular , circularity found at Value :: "+ temp1.value);
+				break;
+			}
+		}
+		if(temp1 == null || temp2 == null)
+		{
+			System.out.println("LL is not circular");
+			return;
+		}
+		removeCircularity(temp1,node);
+		
+	}
+	public static void reverseLL(LinkList node)
+	{
+		//1->2->3->4
+		LinkList current=null,prev=null,next=null;
+		current = node.nextNode;
+		prev = node;
+		node.nextNode = null;
+		while(current != null)
+		{
+			LinkList temp = current.nextNode;
+			current.nextNode = prev;
+			prev = current;
+			current = temp;
+		}
+		System.out.println(" Revered Link List :: ");
+		printList(prev);
+	}
 	public static void main(String[] args) 
 	{
 		Scanner input = new Scanner(System.in);
@@ -148,6 +213,8 @@ public class removeDuplicates {
 			System.out.println("3 : Remove Duplicates"); // 2.1
 			System.out.println("4 : Finding K to Last element"); //2.2
 			System.out.println("5 : Adding 2 Number Stored as reverse"); //2.5
+			System.out.println("6 : Find the Link that creates the Circular LL");//2.6
+			System.out.println("7 : Reverse a Link List");// Own Question from various websites
 			choice = input.nextInt();
 			switch(choice)
 			{
@@ -182,6 +249,39 @@ public class removeDuplicates {
 				LinkList node2 = new LinkList(3,new LinkList(5,new LinkList (4, new LinkList(4,null))));
 				addNodes(node1,node2);
 				break;
+			case 6:
+				System.out.println(" Identify the Link that forms a circular LL");
+				LinkList n1 = new LinkList(1,null);
+				LinkList n2 = new LinkList(2,null);n1.nextNode = n2;
+				LinkList n3 = new LinkList(3,null);n2.nextNode = n3;
+				LinkList n4 = new LinkList(4,null);n3.nextNode = n4;
+				LinkList n5 = new LinkList(5,null);n4.nextNode = n5;
+				LinkList n6 = new LinkList(6,null);n5.nextNode = n6;
+				LinkList n7 = new LinkList(7,null);n6.nextNode = n7;
+				LinkList n8 = new LinkList(8,null);n7.nextNode = n8;
+				LinkList n9 = new LinkList(9,null);n8.nextNode = n9;
+				LinkList n10 = new LinkList(10,null);n9.nextNode = n10;
+				LinkList n11 = new LinkList(11,null);n10.nextNode = n11;
+				n11.nextNode =n5; // Circular Link
+				// Print the nodes
+				int i =14;
+				System.out.println(" The nodes in LL Are : ");
+				LinkList temp;
+				temp =n1;
+				while(i-- >=0)
+				{
+					System.out.print(temp.value +"->" );
+					temp = temp.nextNode;
+				}
+				findCircularNode(n1);
+				System.out.println();
+				break;	
+			case 7:
+				LinkList fwdLL = new LinkList(1,new LinkList(2,new LinkList (3, new LinkList(4, new LinkList(5,new LinkList(6,null))))));
+				System.out.println("Link List is :: ");printList(fwdLL);
+				reverseLL(fwdLL);
+				break;
+				
 				
 			}
 		}
