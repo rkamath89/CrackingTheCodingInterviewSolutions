@@ -78,6 +78,69 @@ void  printLevelOrder(Node *nodeVal)
 		
 	}
 }
+void printInOrder(Node* rootNode)
+{
+
+	if (rootNode != NULL)
+	{
+		printInOrder(rootNode->left);
+		cout << " ," << rootNode->value;
+		printInOrder(rootNode->right);
+	}
+	
+}
+void printPreOrder(Node* rootNode)
+{
+
+	if (rootNode != NULL)
+	{
+		cout << " ," << rootNode->value;
+		printPreOrder(rootNode->left);
+		printPreOrder(rootNode->right);
+		
+		
+	}
+	
+}
+void printPostOrder(Node* rootNode)
+{
+
+	if (rootNode != NULL)
+	{
+		printPostOrder(rootNode->left);
+		printPostOrder(rootNode->right);
+		cout << " ," << rootNode->value;
+	}
+	
+}
+int heightOfTree(Node* rootNode)
+{
+	int height = 1;
+	if (rootNode == NULL)
+		return -1;
+	if (rootNode != NULL)
+	{
+		height = 1 + max(heightOfTree(rootNode->left), heightOfTree(rootNode->right));
+	}
+
+	return height;
+}
+bool isBinarySearchTree(Node* rootNode, int min, int max)
+{
+	if (rootNode == NULL)
+	{
+		return true;
+	}
+	if (rootNode->value > min && rootNode->value < max && isBinarySearchTree(rootNode->left,min,rootNode->value)
+		&& isBinarySearchTree(rootNode->right,rootNode->value,max))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 void main()
 {
 	
@@ -92,7 +155,8 @@ void main()
 		cout << endl << "5: Print PostOrder Traversal";
 		cout << endl << "6: Delete a Node";
 		cout << endl << "7: Find Min and Max";
-		cout << endl << "8: Find Height of the Tree" << endl;
+		cout << endl << "8: Find Height of the Tree";
+		cout << endl << "9: Is Binary Tree a Binary Search Tree" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -108,18 +172,35 @@ void main()
 			break;
 
 		case 3:
+			cout << endl << "PreOrder Traversal :" << endl;
+			printPreOrder(root);
 			break;
 		case 4:
+			cout << endl << "InOrder Traversal :" << endl;
+			printInOrder(root);
 			break;
-
 		case 5:
+			cout << endl << "PostOrder Traversal :" << endl;
+			printPostOrder(root);
 			break;
 		case 6:
 			break;
-
 		case 7:
 			break;
 		case 8:
+			cout << endl << " Height of Tree is : " << heightOfTree(root) << endl;
+			break;
+		case 9:
+			cout << endl << "Is Binary Search Tree :: ";
+			/*root = getNewNode(10);
+			root->left = getNewNode(5);
+			root->right = getNewNode(16);
+			root->left->left = getNewNode(4);
+			root->left->right = getNewNode(7);
+			root->left->left->left = getNewNode(1);
+			root->left->right->right = getNewNode(11);*/
+			bool isValid = isBinarySearchTree(root, -999, 999);
+			cout << isValid;
 			break;
 		}
 	}
