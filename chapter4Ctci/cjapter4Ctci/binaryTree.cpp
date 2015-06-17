@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <stack>
 using namespace std;
 
 
@@ -242,15 +243,85 @@ void printLinkListLevelByLevel()
 		}
 	}
 }
+void commmonAncestor(int number1, int number2,Node * rootNode)
+{
+	Node *temp,prev;
+	temp = rootNode;
+	queue<Node> pathTravered;
+	while (temp != NULL)
+	{
+		pathTravered.push(*temp);
+		if (temp->value == number1)
+		{
+			break;
+		}
+		if (number1 < temp->value)
+		{
+			temp = temp->left;
+		}
+		else
+		{
+			temp = temp->right;
+		}
+	}
+	temp = rootNode;
+	while (temp != NULL)
+	{
+		
+		if (temp->value != pathTravered.front()                                                                   .value)
+		{
+			cout << endl << " Common Node is :: " << prev.value << endl;
+			break;
+		}
+		if (number2 < temp->value)
+		{
+			temp = temp->left;
+		}
+		else
+		{
+			temp = temp->right;
+		}
+		prev = pathTravered.front();
+		pathTravered.pop();
+	}
+}
+void findPathToLeafNodes(Node* rootNode, queue<Node> pathTillNow,int sum)
+{
+	sum = sum - rootNode->value;
+	if (rootNode->right == NULL && rootNode->left == NULL)
+	{
+		pathTillNow.push(*rootNode);
+		
+		if (pathTillNow.size() > 0 && sum == 0)
+		{
+			cout << endl << " Path to Leaf Node :" << pathTillNow.back().value << " From Root : " << pathTillNow.front().value << " Is :" << endl;
+			while (pathTillNow.size() > 0)
+			{
+				cout << " ," << pathTillNow.front().value;
+				pathTillNow.pop();
+			}
+		}
+	}
+	else
+	{
+		pathTillNow.push(*rootNode);
+		findPathToLeafNodes(rootNode->left, pathTillNow, sum);
+		findPathToLeafNodes(rootNode->right, pathTillNow, sum);
+	}
+}
 void main()
 {
 	
 	bool isExit = false;
 	while (!isExit)
 	{
-		int choice = 0;
+		int choice = 0,sum=0;
 		int height = -1;
+		int number1 = 0, number2 = 0;
+		vector<Node*> tempNode;
+		queue<Node> pathTillNow;
 		int sortedArray[] = { 20, 25, 30, 50, 75, 100, 125 };
+		int sortedArray2[] = { 10, 15, 17, 20, 23, 25, 26, 30, 31, 50, 75, 100, 125 };
 		cout << endl << "1: Add a New Node to tree";
 		cout << endl << "2: Print Level Order Traversal";
 		cout << endl << "3: Print PreOrder Traversal";
@@ -262,7 +333,9 @@ void main()
 		cout << endl << "9: Is Binary Tree a Binary Search Tree" ; // Means Left side is smaller values and Right is Bigger Values
 		cout << endl << "10: Is Tree a Balanced Tree";// Difference of Height of the Left and Right Tree is not more than 1.
 		cout << endl << "11: Create Tree from Sorted Array ";
-		cout << endl << "12: Create Link List of All Node every Level" << endl;
+		cout << endl << "12: Create Link List of All Node every Level";
+		cout << endl << "13: Find the Common Ancestor Queue Implementation";
+		cout << endl << "14: Find Path to Leaf Node, given a sum" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -331,13 +404,26 @@ void main()
 		case 12:
 			//int sortedArray[] = { 20,25,30,50,75,100,125 };
 			root = createTreeFromArray(sortedArray, 0, 6);
-			
-			vector<Node*> tempNode;
 			tempNode.push_back(root);
 			levelList.push_back(tempNode);
-			
 			createLinkListOfNodes(root);
 			printLinkListLevelByLevel();
+			break;
+		case 13:
+			//root = NULL;
+			//root = createTreeFromArray(sortedArray2, 0, 12);
+			cout << endl << " Enter the Node1 " << endl;
+			cin >> number1;
+			cout << endl << " Enter the Node2 " << endl;
+			cin >> number2;
+			commmonAncestor(number1, number2, root);
+			break;
+		case 14:
+			cout << endl << " Find path with SUM : ";
+			cin >> sum;
+			if (root == NULL)
+				root = createTreeFromArray(sortedArray, 0, 6);
+			findPathToLeafNodes(root, pathTillNow,sum);
 			break;
 		}
 	}
