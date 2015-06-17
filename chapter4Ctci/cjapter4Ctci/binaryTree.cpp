@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <vector>
 using namespace std;
 
 
@@ -9,6 +10,8 @@ struct Node
 	Node* left;
 	Node* right;
 };
+vector<vector<Node*>> levelList;
+int levelNumber=0;
 Node *root = NULL;
 Node* getNewNode(int value)
 {
@@ -141,6 +144,104 @@ bool isBinarySearchTree(Node* rootNode, int min, int max)
 		return false;
 	}
 }
+int checkHeightAndBalance(Node* rootNode)
+{
+	if (rootNode == NULL)
+	{
+		return -1;
+	}
+	int heightOfLeft = checkHeightAndBalance(rootNode->left);
+	if (heightOfLeft == -2)
+	{
+		return -2;
+	}
+	int heightOfRight = checkHeightAndBalance(rootNode->right);
+	if (heightOfRight == -2)
+	{
+		return -2;
+	}
+	
+	if (abs(heightOfLeft - heightOfRight) > 1)
+	{
+		return -2;
+	}
+	else
+	{
+		return max(heightOfLeft,heightOfRight) + 1;
+	}
+
+	
+}
+Node* createTreeFromArray(int *sortedArray, int low, int high)
+{
+	Node *newNode = new Node();
+	if (high < low)
+	{
+		return NULL;
+	}
+	int mid = (low + high) / 2;
+
+	newNode->value = sortedArray[mid];
+	newNode->left = createTreeFromArray(sortedArray, low, mid-1);
+	newNode->right = createTreeFromArray(sortedArray, mid+1, high);
+	return newNode;
+
+}
+
+void createLinkListOfNodes(Node *rootNode)
+{
+	while (levelList[levelNumber].size() != 0)
+	{
+		int nextLevel = levelNumber + 1;
+		vector<Node*> tempVector = levelList[levelNumber];
+		vector<Node*> newVector;
+		for (int i = 0; i < tempVector.size(); i++)
+		{
+			Node *tempNode = tempVector[i];
+			if (tempNode->left != NULL)
+			{
+				newVector.push_back(tempNode->left);
+			}
+			if (tempNode->right != NULL)
+			{
+				newVector.push_back(tempNode->right);
+			}
+		}
+		levelList.push_back(newVector);
+		levelNumber++;
+	}
+	
+	
+}
+void printLinkListLevelByLevel()
+{
+	vector<vector<Node*>> newlevelList;
+	vector<Node*> tempVector = levelList[0];
+	cout << endl << " Contents Of Level " << 0 << endl;
+	cout << " ," << tempVector[0]->value;
+	newlevelList.push_back(tempVector);
+	
+	for (int i = 1; i < levelNumber; i++)
+	{
+		int prevLevel = i - 1;
+		vector<Node*> prevVector = newlevelList[prevLevel];
+		vector<Node*> tempVector = levelList[i];
+		for (int j = 0; j < tempVector.size(); j++)
+		{
+			prevVector.push_back(tempVector[j]);
+		}
+		newlevelList.push_back(prevVector);
+	}
+	for (int i = 1; i < levelNumber; i++)
+	{
+		cout << endl << " Contents Of Level " << i << endl;
+		vector<Node*> tempVector = newlevelList[i];
+		for (int j = 0; j < tempVector.size(); j++)
+		{
+			cout << " ," << tempVector[j]->value;
+		}
+	}
+}
 void main()
 {
 	
@@ -148,6 +249,8 @@ void main()
 	while (!isExit)
 	{
 		int choice = 0;
+		int height = -1;
+		int sortedArray[] = { 20, 25, 30, 50, 75, 100, 125 };
 		cout << endl << "1: Add a New Node to tree";
 		cout << endl << "2: Print Level Order Traversal";
 		cout << endl << "3: Print PreOrder Traversal";
@@ -156,7 +259,10 @@ void main()
 		cout << endl << "6: Delete a Node";
 		cout << endl << "7: Find Min and Max";
 		cout << endl << "8: Find Height of the Tree";
-		cout << endl << "9: Is Binary Tree a Binary Search Tree" << endl;
+		cout << endl << "9: Is Binary Tree a Binary Search Tree" ; // Means Left side is smaller values and Right is Bigger Values
+		cout << endl << "10: Is Tree a Balanced Tree";// Difference of Height of the Left and Right Tree is not more than 1.
+		cout << endl << "11: Create Tree from Sorted Array ";
+		cout << endl << "12: Create Link List of All Node every Level" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -191,7 +297,7 @@ void main()
 			cout << endl << " Height of Tree is : " << heightOfTree(root) << endl;
 			break;
 		case 9:
-			cout << endl << "Is Binary Search Tree :: ";
+			cout << endl << "Is Binary Search Tree :: " << isBinarySearchTree(root, -999, 999);
 			/*root = getNewNode(10);
 			root->left = getNewNode(5);
 			root->right = getNewNode(16);
@@ -199,8 +305,39 @@ void main()
 			root->left->right = getNewNode(7);
 			root->left->left->left = getNewNode(1);
 			root->left->right->right = getNewNode(11);*/
-			bool isValid = isBinarySearchTree(root, -999, 999);
-			cout << isValid;
+			//bool isValid = isBinarySearchTree(root, -999, 999);
+			//cout << isValid;
+			break;
+		case 10:
+			cout << "Is the Tree a Balanced Tree :: ";
+			height = checkHeightAndBalance(root);
+			if (height == -2)
+			{
+				cout << "NO" << endl;
+			}
+			else
+			{
+				cout << "YEs" << endl;
+			}
+				
+			break;
+		case 11:
+			cout << endl << " Creating a Tree from Sorted Array";
+			//int sortedArray[] = { 20,25,30,50,75,100,125 };
+			root = createTreeFromArray(sortedArray, 0, 6);
+			cout << endl << "Contents Of Tree " << endl;
+			printInOrder(root);
+			break;
+		case 12:
+			//int sortedArray[] = { 20,25,30,50,75,100,125 };
+			root = createTreeFromArray(sortedArray, 0, 6);
+			
+			vector<Node*> tempNode;
+			tempNode.push_back(root);
+			levelList.push_back(tempNode);
+			
+			createLinkListOfNodes(root);
+			printLinkListLevelByLevel();
 			break;
 		}
 	}
