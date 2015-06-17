@@ -309,6 +309,37 @@ void findPathToLeafNodes(Node* rootNode, queue<Node> pathTillNow,int sum)
 		findPathToLeafNodes(rootNode->right, pathTillNow, sum);
 	}
 }
+void findPathGivenSum(Node* rootNode, vector<Node> pathTillNow, int sum)
+{
+
+	if (rootNode == NULL)
+		return;
+	pathTillNow.push_back(*rootNode);
+	int computedSum = 0;
+	if (pathTillNow.size() > 0)
+	{
+		for (int i = pathTillNow.size(); i > 0; i--)
+		{
+			Node tempNode = pathTillNow[i-1];
+			computedSum = computedSum + tempNode.value;
+			if (computedSum == sum)
+			{
+				
+				cout << endl << " Path with Sum " << sum;
+				for (int j = i-1; j < pathTillNow.size(); j++)
+				{
+					Node tempNode = pathTillNow[j];
+					cout << " ," << tempNode.value;
+				}
+				
+			}
+
+		}
+	}
+	findPathGivenSum(rootNode->left, pathTillNow, sum);
+	findPathGivenSum(rootNode->right, pathTillNow, sum);
+
+}
 void main()
 {
 	
@@ -319,6 +350,7 @@ void main()
 		int height = -1;
 		int number1 = 0, number2 = 0;
 		vector<Node*> tempNode;
+		vector<Node> pathVector;
 		queue<Node> pathTillNow;
 		int sortedArray[] = { 20, 25, 30, 50, 75, 100, 125 };
 		int sortedArray2[] = { 10, 15, 17, 20, 23, 25, 26, 30, 31, 50, 75, 100, 125 };
@@ -335,7 +367,8 @@ void main()
 		cout << endl << "11: Create Tree from Sorted Array ";
 		cout << endl << "12: Create Link List of All Node every Level";
 		cout << endl << "13: Find the Common Ancestor Queue Implementation";
-		cout << endl << "14: Find Path to Leaf Node, given a sum" << endl;
+		cout << endl << "14: Find Path to Leaf Node, given a sum";
+		cout << endl << "15: Find Path given a sum" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -424,6 +457,27 @@ void main()
 			if (root == NULL)
 				root = createTreeFromArray(sortedArray, 0, 6);
 			findPathToLeafNodes(root, pathTillNow,sum);
+			break;
+		case 15:
+			root = getNewNode(50);
+			root->left = getNewNode(25);
+			root->right = getNewNode(100);
+			root->right->left = getNewNode(75);
+			root->right->right = getNewNode(125);
+			root->left->left = getNewNode(20);
+			root->left->right = getNewNode(30);
+			root->left->left->left = getNewNode(15);
+			root->left->right->left = getNewNode(26);
+			root->left->right->right = getNewNode(31);
+			root->left->left->right = getNewNode(23);
+			root->left->left->left->left = getNewNode(10);
+			root->left->left->left->right = getNewNode(17);
+			
+			cout << endl << " Find path with SUM : ";
+			cin >> sum;
+			if (root == NULL)
+				root = createTreeFromArray(sortedArray, 0, 6);
+			findPathGivenSum(root, pathVector, sum);
 			break;
 		}
 	}
