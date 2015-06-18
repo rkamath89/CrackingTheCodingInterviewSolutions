@@ -340,6 +340,44 @@ void findPathGivenSum(Node* rootNode, vector<Node> pathTillNow, int sum)
 	findPathGivenSum(rootNode->right, pathTillNow, sum);
 
 }
+
+bool checkIfBothTreeHaveSameElements(Node* root1, Node* root2)
+{
+	if (root1 == NULL && root2 == NULL)
+	{
+		return true;
+	}
+	if (root1 == NULL || root2 == NULL)
+	{
+		return false;
+	}
+	if (root1->value == root2->value)
+	{
+		bool leftMatches = checkIfBothTreeHaveSameElements(root1->left, root2->left);
+		bool rightMatches = checkIfBothTreeHaveSameElements(root1->right, root2->right);
+		return (leftMatches && rightMatches);
+	}
+	else
+	{
+		return false;
+	}
+
+}
+bool checkIfSubTree(Node* root1, Node* root2)
+{
+	if (root1 == NULL)
+		return false;
+	if (root1->value == root2->value)
+	{
+		if (checkIfBothTreeHaveSameElements(root1, root2))
+			return true;
+	}
+	else
+	{
+		return (checkIfSubTree(root1->left, root2) || checkIfSubTree(root1->right, root2));
+	}
+
+}
 void main()
 {
 	
@@ -352,6 +390,8 @@ void main()
 		vector<Node*> tempNode;
 		vector<Node> pathVector;
 		queue<Node> pathTillNow;
+		Node* root1;
+		bool isSubTree = false;
 		int sortedArray[] = { 20, 25, 30, 50, 75, 100, 125 };
 		int sortedArray2[] = { 10, 15, 17, 20, 23, 25, 26, 30, 31, 50, 75, 100, 125 };
 		cout << endl << "1: Add a New Node to tree";
@@ -368,7 +408,8 @@ void main()
 		cout << endl << "12: Create Link List of All Node every Level";
 		cout << endl << "13: Find the Common Ancestor Queue Implementation";
 		cout << endl << "14: Find Path to Leaf Node, given a sum";
-		cout << endl << "15: Find Path given a sum" << endl;
+		cout << endl << "15: Find Path given a sum";
+		cout << endl << "16: Check if Tree is a SubTree" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -478,6 +519,51 @@ void main()
 			if (root == NULL)
 				root = createTreeFromArray(sortedArray, 0, 6);
 			findPathGivenSum(root, pathVector, sum);
+			break;
+		case 16:
+			root = getNewNode(50);
+			root->left = getNewNode(25);
+			root->right = getNewNode(100);
+			root->right->left = getNewNode(75);
+			root->right->right = getNewNode(125);
+			root->left->left = getNewNode(20);
+			root->left->right = getNewNode(30);
+			root->left->left->left = getNewNode(15);
+			root->left->right->left = getNewNode(26);
+			root->left->right->right = getNewNode(31);
+			root->left->left->right = getNewNode(23);
+			root->left->left->left->left = getNewNode(10);
+			root->left->left->left->right = getNewNode(17);
+			
+			// Pass Case
+			root1 = getNewNode(20);
+			root1->left = getNewNode(15);
+			root1->right = getNewNode(23);
+			root1->left->left = getNewNode(10);
+			root1->left->right = getNewNode(17);
+			isSubTree = checkIfSubTree(root, root1);
+			isSubTree = checkIfSubTree(root, root1);
+			cout << endl << "(PASS)Is Tree2 a SubTree ? ";
+			if (isSubTree == 1)
+				cout << " YES";
+			else
+				cout << "NO";
+
+			cout << endl;
+			// Failure Case
+			root1 = getNewNode(20);
+			root1->left = getNewNode(15);
+			root1->right = getNewNode(23);
+			root1->left->left = getNewNode(10);
+			root1->left->right = getNewNode(16);
+			isSubTree = checkIfSubTree(root, root1);
+			cout << endl << "(FAIL)Is Tree2 a SubTree ? ";
+			if (isSubTree == 1)
+				cout << " YES";
+			else
+				cout << "NO";
+
+			cout << endl;
 			break;
 		}
 	}
